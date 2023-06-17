@@ -1,0 +1,121 @@
+library(yfR)
+library(bslib)
+library(DT)
+library(formattable)
+library(ggplot2)
+library(hrbrthemes)
+library(plotly)
+library(shinydashboard)
+library(shinythemes)
+library(shiny)
+library(shinyWidgets)
+library(tidyverse)
+
+precos <- ()
+
+ui <- 
+    navbarPage("ME607 - Series Temporais", selected = 'precos', collapsible = TRUE, 
+             inverse = TRUE, theme = shinytheme("yeti"),
+             # Cor
+             tags$head(tags$style(HTML('.navbar-static-top {background-color: "blue";}',
+                                       '.navbar-default .navbar-nav>.active>a {background-color: "blue";}'))),
+             # Tab 
+             tabPanel("Serie Temporal",
+                      # Widget Ano Teste de Progresso
+                      fluidRow(width=6,
+                               column(width=3,
+                                      selectizeInput("ref_date", label="",choices=sort(unique(precos$ref_date)),
+                                                     options = list(create = TRUE),multiple = TRUE, selected=2021, width='1200')
+                               ),
+                               
+                               column(width = 3,
+                                      selectInput("visao", label = "Visão separada por ano do teste", 
+                                                  choices = list("Sim" = "Sim", "Não" = "Não"), selected = 1)
+                               )
+                      ),
+                      # Gráficos com Filtro Ano TP
+                      dashboardBody(
+                        fluidRow(plotlyOutput("boxplotTP")),
+                        fluidRow(plotlyOutput("TPporAreaAno"))
+                      ),
+                      
+                      # Gráfico com filtro Ano de Ingresso
+                      fluidRow(column(width=6, selectizeInput("ingresso", label="Ano de Ingresso", choices=sort(unique(dataInputTP$ingresso)),
+                                                              options = list(create = TRUE), multiple = TRUE, selected=2018,width='1200'))
+                      ),
+                      # Gráficos 
+                      dashboardBody(
+                        fluidRow(plotlyOutput("linhaTP")),
+                        fluidRow(plotlyOutput("TPporAreaIngresso")),
+                        fluidRow(
+                          column(width = 12,
+                                 plotlyOutput("barrasAcertosGrupos")
+                          )
+                        )
+                      )),
+             #tab Diagnósticos
+             
+               tabPanel("Desempenho na Graduação",
+                      
+                      fluidRow(column(width=3, selectizeInput("ingressoCR", label="Ano de Ingresso", choices=sort(unique(dataInputCRGrad$ano)),
+                                                              options = list(create = TRUE), multiple = TRUE, selected=2018,width='1200'))
+                      ),
+                      
+                      dashboardBody(
+                        fluidRow(plotlyOutput("CR_Paais")),
+                        fluidRow(plotlyOutput("CR_Renda"))
+                      )),
+  )  # Fim NavBar       
+
+
+server <- function(input, output, session) {
+  
+  dadosFiltrados2 <- reactive({
+    dadosFiltrados2 <- dataInputTP %>%
+      filter(anoTP %in% c(input$anoTP))
+  })
+label_anoTP <- function(x) paste0("<B> sei lá: </B>", x)
+  
+  output$series <- plotly::renderPlotly({
+    
+   if(input$visao == "Sim"){
+      plot <- ggplotly(dadosFiltrados2_long() %>%
+                         drop_na(acertos) %>% 
+                         group_by(anoCurso, anoTP, area) %>%
+                         summarize(Media = mean(acertos)) %>% 
+                         ggplot(aes(x=anoCurso, y = Media, color=factor(area))) +
+                         geom_line(size = 0.75) +
+                         geom_point()+
+                         facet_grid(~anoTP, labeller = as_labeller(label_anoTP)) +
+                         scale_x_continuous(breaks=seq(min(precos), max(precos), 1))+
+                         #scale_color_discrete(palette="Set2", name="Ano de Ingresso")+
+                         scale_color_brewer(palette="Set2", name="Área")+
+                         #scale_colour_manual(values = c("#66C2A5","#FC8D62","#8DA0CB","#E78AC3","#A6D854","#FFD92F","#E5C494","#B3B3B3"))+
+                         ggtitle("Series Temporais")+
+                         labs(x = "Data",y = "") +
+                         theme_minimal()+
+                         theme(plot.title = element_text(face = "bold", size = 12))
+      )
+      
+    } else {
+      plot <- ggplotly(dadosFiltrados2_long() %>%
+                         drop_na(acertos) %>% 
+                         group_by(anoCurso, area) %>%
+                         summarize(Media = mean(acertos)) %>% 
+                         ggplot(aes(x=anoCurso, y = Media, color=factor(area))) +
+                         geom_line(size = 0.75) +
+                         geom_point() +
+                         scale_x_continuous(breaks=seq(min(dataInputTP$anoCurso), max(dataInputTP$anoCurso), 1))+
+                         #scale_color_discrete(palette="Set2", name="Ano de Ingresso")+
+                         scale_color_brewer(palette="Set2", name="Área")+
+                         #scale_colour_manual(values = c("#66C2A5","#FC8D62","#8DA0CB","#E78AC3","#A6D854","#FFD92F","#E5C494","#B3B3B3"))+
+                         ggtitle("Média de acertos (%) no teste de progresso por ano de curso e área de acordo com o(s) ano(s) do teste")+
+                         labs(x = "Ano de Curso",y = "Média de Acertos (%)") +
+                         theme_minimal()+
+                         theme(plot.title = element_text(face = "bold", size = 12))
+      )
+    }
+    plot
+  })
+} 
+shinyApp(ui, server)
