@@ -11,7 +11,7 @@ library(shiny)
 library(shinyWidgets)
 library(tidyverse)
 
-precos <- ()
+precos <- trabalho_st()
 
 ui <- 
   navbarPage("ME607 - Series Temporais", selected = 'precos', collapsible = TRUE, 
