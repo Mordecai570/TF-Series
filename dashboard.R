@@ -119,3 +119,22 @@ server <- function(input, output, session) {
   })
 } 
 shinyApp(ui, server)
+
+
+# media
+fit <- df |> model(MEAN(resposta))
+fit |> forecast(h = 12) |> autoplot(df, level = NULL)  
+
+# naive
+fit <- df |>  model(NAIVE(resposta))
+fit |> forecast(h = 12) |> autoplot(df, level = NULL) 
+
+# naive sazional
+fit <- df |> model(SNAIVE(resposta ~ lag(10))) 
+fit |> forecast(h = 12) |> autoplot(df, level = NULL) 
+
+# drift
+fit <- df |> model(RW(resposta ~ drift())) 
+fit |> forecast(h = 12) |> autoplot(df, level = NULL)
+
+# modelo do grupo
