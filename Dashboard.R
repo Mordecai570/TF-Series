@@ -12,21 +12,9 @@ library(formattable)
 library(forecast)
 library(yfR)
 
-nome_acao <- "SEQL3.SA"   # Código no Yahoo Finance
-data_ini  <- "2023-01-01" # Data de inicio
-data_fim  <-  Sys.Date() # Data de fim
+path=file.path("C:/Users/Windows/Desktop/Estatística/Series Temporais/")
 
-precos <- yf_get(tickers = nome_acao, first_date = data_ini, last_date = data_fim)
-
-precos <- precos %>% select(ref_date,price_adjusted)
-
-df <- data.frame(diff(precos$price_adjusted))
-
-df[nrow(df) + 1,] <- c(0)
-
-colnames(df) <- c("valores")
-
-precos <- cbind(precos,df)
+precos <- read_excel(file.path(path,"precos_orig"))
 
 
 ui <-  navbarPage(selected = "precos",theme = shinytheme("cerulean"),
