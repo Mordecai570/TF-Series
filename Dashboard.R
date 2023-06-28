@@ -15,6 +15,22 @@ library(yfR)
 
 precos <- read.csv("precos_orig.csv"))
 
+prev <- c()  
+diferencas<-c()
+
+fit <- Arima(precos$valores, order=c(0,1,3) , include.mean = T)
+
+for (i in 100:length(precos)){
+  fit <- Arima(precos$valores[1:i], order=c(0,1,3) , include.mean = F)
+  prev[i] <- forecast(fit,h=1)$mean[1]
+  diferencas[i]<- abs(prev[i] - precos$valores[i +1])
+}
+
+c <- data.frame(mean(diferencas, na.rm = T))
+colnames(c) <- c("Acurácia")
+
+a <- forecast(fit,h=1)
+a <- data.frame(a)
 
 ui <-  navbarPage(selected = "precos",theme = shinytheme("cerulean"),
           "ME607 - Séries",
