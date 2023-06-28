@@ -1,6 +1,6 @@
 # Introdução
 
-Este Dashboard interativo faz parte da avaliação da disciplina ME607  
+Este Dashboard interativo faz parte da avaliação da disciplina ME607. Avalia-se a série temporal da empresa brasileira Sequoia Ltda.
 
 
 ## Arquivos Principais
