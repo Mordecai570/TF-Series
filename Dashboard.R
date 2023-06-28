@@ -175,12 +175,15 @@ server <- function(input, output, session) {
   }
   
   
-  c <- data.frame(mean(diferencas, na.rm = T))
-  colnames(c) <- c("Acurácia")
-  
+    output$c <- renderDataTable({ 
+    c <- data.frame(mean(diferencas, na.rm = T))
+    colnames(c) <- c("Acurácia")
+  })
 
+    output$a <- renderDataTable({ 
   a <- forecast(fit,h=1)
   a <- data.frame(a)
+  })
 
 }
 
