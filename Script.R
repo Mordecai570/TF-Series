@@ -1,5 +1,6 @@
 library(forecast)
 library(readxl)
+library(dplyr)
 library(yfR)
 
 
@@ -33,13 +34,19 @@ df <- forecast(fit,h=1)$mean[1]
 
 df <- data.frame(df)   #transformando em data frame
 
-for (i in 1:119) {
+for (i in 1:120) {
 df[nrow(df) + 1,] <- c(0)
 }                           #igualando os data frames
 
+
+
 precos <- cbind(precos,df) # Banco 
 
-path=file.path("C:/Users/Windows/Desktop/Estatística/Series Temporais/")
+precos_orig <- read.csv("C:/Users/Windows/Desktop/Estatística/Series Temporais/precos_orig.csv")
+
+precos[nrow(precos) + 1,] <- precos_orig[1,] 
+
+write.csv(precos, "C:\\Users\\Windows\\Desktop\\Estatística\\Series Temporais\\precos_orig.csv", row.names=FALSE)
 
 precos_orig <- read_excel(file.path(path,"precos_orig"))
 
