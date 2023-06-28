@@ -7,7 +7,7 @@ Este grupo foi composto pelos alunos Gabriel Victor Soares dos Santos RA:197563,
 
 ## Arquivos Principais
 
-1. Script.R: extrai as informações do YahooFinance para o banco de dados.
+1. Script.R: extrai as informações do YahooFinance para criar o banco de dados.
 2. Dashboard.R: script em R para a criação do dashboard em shiny.
 3. Arquivo em Python que age como Git Actions, rodando de forma automática e programada.
 
