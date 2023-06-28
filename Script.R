@@ -42,14 +42,11 @@ df[nrow(df) + 1,] <- c(0)
 
 precos <- cbind(precos,df) # Banco 
 
-precos_orig <- read.csv("C:/Users/Windows/Desktop/Estatística/Series Temporais/precos_orig.csv")
+precos_orig <- read.csv("precos_orig.csv")
 
 precos[nrow(precos) + 1,] <- precos_orig[1,] 
 
-write.csv(precos, "C:\\Users\\Windows\\Desktop\\Estatística\\Series Temporais\\precos_orig.csv", row.names=FALSE)
+write.csv(precos, "precos_orig.csv", row.names=FALSE)
 
-precos_orig <- read_excel(file.path(path,"precos_orig"))
+print(precos)
 
-precos[nrow(precos) + 1,] <- precos_orig[1,] 
-
-write.csv(precos, "C:\\Users\\Windows\\Desktop\\Estatística\\Series Temporais\\precos_orig.csv", row.names=FALSE)
