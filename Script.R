@@ -42,11 +42,11 @@ df[nrow(df) + 1,] <- c(0)
 
 precos <- cbind(precos,df) # Banco 
 
-precos_orig <- read.csv("precos_orig.csv")
+precos_orig <- read.csv("precos_orig.csv") # lendo o banco anterior
 
-precos[nrow(precos) + 1,] <- precos_orig[1,] 
+precos[nrow(precos) + 1,] <- precos_orig[1,]  # juntando os bancos
 
-write.csv(precos, "precos_orig.csv", row.names=FALSE)
+write.csv(precos, "precos_orig.csv", row.names=FALSE) # salvando o csv
 
 print(precos)
 
